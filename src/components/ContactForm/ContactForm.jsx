@@ -18,7 +18,7 @@ const FeedbackSchema = Yup.object().shape({
         .max(50, "Too long!")
         .required("Required"),
     number: Yup.string()
-        .matches(/^\+?\d{5, 13}$/, "Number must be 5-13 digits")
+        .matches(/^\+?\d{5,13}$/, "Number must be 5-13 digits")
         .required("Required"),
 });
 
@@ -26,6 +26,8 @@ const ContactForm = () => {
     const dispatch = useDispatch();
     const nameId = useId();
     const numberId = useId();
+
+
     const handleSubmit = (values, actions) => {
         dispatch(
             addContact({
@@ -34,22 +36,9 @@ const ContactForm = () => {
                 number: values.number,
             })
         );
-
         actions.resetForm();
     };
 
-    const handleNumberInput = (e) => {
-        const value = e.target.value;
-        const cursorPosition = e.target.selectionStart;
-        if (e.key === "+" && cursorPosition !== 0) {
-            e.preventDefault();
-            return;
-        }
-
-        if (!/[0-9+]/.test(e.key) || (e.key === "+" && value.includes("+"))) {
-            e.preventDefault();
-        }
-    };
 
     return (
         <Formik validationSchema={FeedbackSchema} initialValues={initialValues} onSubmit={handleSubmit}>
@@ -62,9 +51,10 @@ const ContactForm = () => {
                     </Container>
                     <Container wrapper="wrapper">
                         <label htmlFor={numberId}>Number</label>
-                        <Field className={s.input} type="text" name="number" id={numberId} placeholder="+380678987432" onKeyPress={handleNumberInput} />
+                        <Field className={s.input} type="text" name="number" id={numberId} placeholder="+380678987432" />
+                        <ErrorMessage name="name" component="span" className={s.error} />
                     </Container>
-                    <button className={s.button} type="submit" disabled={!isValid || !dirty}>
+                    <button className={s.button} type="submit" disabled= {!isValid || !dirty}>
                         Add contact
                     </button>
                 </Form>
